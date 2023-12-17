@@ -1,7 +1,7 @@
 from reportlab.lib import colors
 import math
 from enum import Enum
-from reportlab.lib.pagesizes import letter as PdfPagesize
+# from reportlab.lib.pagesizes import letter as
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -23,6 +23,7 @@ from top_area_style import (
     account_number_style
 )
 
+PdfPagesize = (8.5*72, 11.7*72)
 
 
 mm = 0.75
