@@ -30,12 +30,18 @@ number_font_path = "./fonts/Numeric.ttf"
 pdfmetrics.registerFont(TTFont("NumericFont", number_font_path))
 textgrey_font_path = "./fonts/TeXGyreHeros.ttf"
 pdfmetrics.registerFont(TTFont("TeXGyreHeros", textgrey_font_path))
-educlid_bold = "./fonts/Euclid/Bold.ttf"
-pdfmetrics.registerFont(TTFont("EuclidBold", educlid_bold))
-educlid_semibold = "./fonts/Euclid/SemiBold.ttf"
-pdfmetrics.registerFont(TTFont("EuclidSemiBold", educlid_semibold))
+
 educlid_regular = "./fonts/Euclid/Regular.ttf"
 pdfmetrics.registerFont(TTFont("Euclid", educlid_regular))
+
+educlid_medium = "./fonts/Euclid/Medium.ttf"
+pdfmetrics.registerFont(TTFont("EuclidMedium", educlid_medium))
+
+educlid_semibold = "./fonts/Euclid/SemiBold.ttf"
+pdfmetrics.registerFont(TTFont("EuclidSemiBold", educlid_semibold))
+
+educlid_bold = "./fonts/Euclid/Bold.ttf"
+pdfmetrics.registerFont(TTFont("EuclidBold", educlid_bold))
 
 class TableColumns(Enum):
     date = "Vervollständigt"
@@ -114,8 +120,8 @@ def generate_pdf(
         ('RIGHTPADDING', (0, 0), (1, 0), 5),
         ('TEXTCOLOR', (0, 0), (1, 0), '#222B55'),
     ])
-
-    info_table_col_widths = [350, 232]
+    info_table_col_widths = [325, 230]
+    # info_table_col_widths = [350, 232]
     info_table = Table(info_table_data, colWidths=info_table_col_widths)
     info_table.setStyle(info_table_style)
 
@@ -143,7 +149,7 @@ def generate_pdf(
 
     account_info_table_data_right = [
         [
-            Paragraph("", account_heading_style)
+            Paragraph("", ParagraphStyle('unknown', fontSize=1,))
         ],
         [
             Paragraph("Ausstellungsdatum:", invoice_detail_style),
@@ -171,10 +177,10 @@ def generate_pdf(
     left_table = Table(account_info_table_data_left)
     right_table = Table(account_info_table_data_right)
     right_table.setStyle(TableStyle([
-        ('TOPPADDING', (1, 1), (1, -1), 5),
-        ('BOTTOMPADDING', (1, 1), (1, -1), 5),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
         ('LEFTPADDING', (1, 1), (1, -1), 5),
         ('RIGHTPADDING', (1, 1), (1, -1), 5),
+        ('VALIGN', (0, 0), (0, -1), 'TOP'),
         ]
     ))
 
@@ -196,7 +202,8 @@ def generate_pdf(
         ('TEXTCOLOR', (0, 0), (1, 0), '#222B55'),
     ])
 
-    account_info_table_col_widths = [350, 232]
+
+    account_info_table_col_widths = [375, 190]
     account_info_table = Table(account_info_table_data, colWidths=account_info_table_col_widths)
     account_info_table.setStyle(account_info_table_style)
 
@@ -255,7 +262,7 @@ def generate_pdf(
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('LEFTPADDING', (0, 0), (-1, 0), 12),
         ('RIGHTPADDING', (0, 0), (-1, 0), 12),
-        ('FONTNAME', (2, 0), (2, -1), "EuclidSemiBold"),  # Apply bold font to the "Amount" column
+        ('FONTNAME', (2, 0), (2, -1), "EuclidMedium"),  # Apply bold font to the "Amount" column
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),

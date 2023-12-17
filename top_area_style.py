@@ -26,7 +26,8 @@ kontoauszug_style = ParagraphStyle(
     padding=0,
     textColor='#FF5761',
     fontSize=28,
-    fontName=bold_style.fontName
+    # fontName=bold_style.fontName
+    fontName="EuclidMedium",
 
 )
 
@@ -57,12 +58,12 @@ invoice_detail_style = ParagraphStyle(
     'invoice_detail_style',
     textColor='#212B54',
     fontSize=11,
-    alignment=2
+    alignment=2,
 )
 invoice_detail_style_bold = ParagraphStyle(
     'invoice_detail_style_bold',
     textColor='#212B54',
     fontSize=11,
-    fontName="EuclidSemiBold",
+    fontName="EuclidMedium",
     alignment=2
 )
