@@ -3,6 +3,8 @@ import math
 from enum import Enum
 from reportlab.lib.pagesizes import letter as PdfPagesize
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import csv
@@ -14,14 +16,20 @@ from top_area_style import (
     address_style,
     kontoauszug_style,
     account_heading_style,
-    abount_number_style,
+    about_number_style,
+    about_number_style_bold,
     invoice_detail_style,
-    invoice_detail_style_bold
+    invoice_detail_style_bold,
+    account_number_style
 )
 
 
 
 mm = 0.75
+number_font_path = "./fonts/Numeric.ttf"
+textgrey_font_path = "./fonts/Numeric.ttf"
+pdfmetrics.registerFont(TTFont("TeXGyreHeros", textgrey_font_path))
+pdfmetrics.registerFont(TTFont("NumericFont", number_font_path))
 
 class TableColumns(Enum):
     date = "Vervollständigt"
@@ -115,8 +123,8 @@ def generate_pdf(
 
 
     customer_account_name_paragraph = Paragraph(f"{customer_account_name}", account_heading_style)
-    iban_paragraph = Paragraph(f"IBAN: {customer_account_iban}", abount_number_style)
-    bin_paragraph = Paragraph(f"BIC: {customer_account_bic}", abount_number_style)
+    iban_paragraph = Paragraph(f"IBAN: {customer_account_iban}", account_number_style)
+    bin_paragraph = Paragraph(f"BIC: {customer_account_bic}", account_number_style)
 
     account_info_table_data_left = [
         [customer_account_name_paragraph],
@@ -204,8 +212,19 @@ def generate_pdf(
     table_data = [['Vervollständigt', 'Beschreibung', 'Einnahmen / Ausgaben']]
 
     for entry in data:
-        description = '\n'.join(entry[TableColumns.account.value])
-        table_data.append([entry[TableColumns.date.value], description, entry[TableColumns.amount.value]])
+        account_descriptive_table_data = [[]]
+        account_descriptive_values = list(entry[TableColumns.account.value])
+        for index, account_description in enumerate(account_descriptive_values):
+            if index == 0:
+                account_descriptive_table_data[0].append(
+                    Paragraph(f"{account_description}", about_number_style_bold)
+                )
+            else:
+                account_descriptive_table_data[0].append(
+                    Paragraph(f"{account_description}", about_number_style)
+                )
+
+        table_data.append([entry[TableColumns.date.value], account_descriptive_table_data, entry[TableColumns.amount.value]])
 
 
     # Create the table style
@@ -255,13 +274,21 @@ def generate_pdf(
     story.append(german_paragraphs)
 
 
-    # Build the PDF document
     def add_footer(canvas, doc):
         canvas.saveState()
 
+        # Get the dimensions of the letter-size page
+        page_width, page_height = PdfPagesize
+
         # Logo in the center
         logo_path = "footer-image.png"
-        canvas.drawInlineImage(logo_path, PdfPagesize[0] / 2 - 20, 10, width=115*mm, height=72*mm)
+        logo_width, logo_height = 115*mm, 72*mm
+
+        # Calculate the coordinates to center the image
+        x_centered = (page_width - logo_width) / 2
+        y_centered = 10  # You may need to adjust this value based on your requirements
+
+        canvas.drawInlineImage(logo_path, x_centered, y_centered, width=logo_width, height=logo_height)
 
         # Two lines underneath the logo
 
@@ -270,9 +297,13 @@ def generate_pdf(
         page_num = canvas.getPageNumber()
         text = f"{page_num}"
         canvas.setFillColorRGB(0.686, 0.702, 0.753)
-        canvas.drawRightString(PdfPagesize[0] - 20, 15, text)
+
+        # Adjust the x-coordinate to place the page number closer to the right edge
+        x_page_num = page_width - 20
+        canvas.drawRightString(x_page_num, 15, text)
 
         canvas.restoreState()
+
     # doc.build(story)
     doc.build(story, onFirstPage=add_footer, onLaterPages=add_footer)
 

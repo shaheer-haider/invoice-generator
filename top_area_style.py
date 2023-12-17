@@ -38,8 +38,18 @@ account_heading_style = ParagraphStyle(
     fontSize=11,
     fontName=bold_style.fontName
 )
-abount_number_style = ParagraphStyle(
-    'abount_number_style',
+account_number_style = ParagraphStyle(
+    'account_number_style',
+    textColor='#212B54',
+    fontName="TeXGyreHeros",
+)
+about_number_style = ParagraphStyle(
+    'about_number_style',
+    textColor='#212B54',
+)
+about_number_style_bold = ParagraphStyle(
+    'about_number_style_bold',
+    fontName=bold_style.fontName,
     textColor='#212B54',
 )
 
