@@ -41,7 +41,7 @@ account_heading_style = ParagraphStyle(
 account_number_style = ParagraphStyle(
     'account_number_style',
     textColor='#212B54',
-    fontName="TeXGyreHeros",
+    fontName="NumericFont",
 )
 about_number_style = ParagraphStyle(
     'about_number_style',
@@ -63,6 +63,6 @@ invoice_detail_style_bold = ParagraphStyle(
     'invoice_detail_style_bold',
     textColor='#212B54',
     fontSize=11,
-    fontName=bold_style.fontName,
+    fontName="EuclidSemiBold",
     alignment=2
 )

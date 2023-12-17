@@ -6,7 +6,7 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import csv
 from io import BytesIO
 import pandas as pd
@@ -27,9 +27,15 @@ from top_area_style import (
 
 mm = 0.75
 number_font_path = "./fonts/Numeric.ttf"
-textgrey_font_path = "./fonts/Numeric.ttf"
-pdfmetrics.registerFont(TTFont("TeXGyreHeros", textgrey_font_path))
 pdfmetrics.registerFont(TTFont("NumericFont", number_font_path))
+textgrey_font_path = "./fonts/TeXGyreHeros.ttf"
+pdfmetrics.registerFont(TTFont("TeXGyreHeros", textgrey_font_path))
+educlid_bold = "./fonts/Euclid/Bold.ttf"
+pdfmetrics.registerFont(TTFont("EuclidBold", educlid_bold))
+educlid_semibold = "./fonts/Euclid/SemiBold.ttf"
+pdfmetrics.registerFont(TTFont("EuclidSemiBold", educlid_semibold))
+educlid_regular = "./fonts/Euclid/Regular.ttf"
+pdfmetrics.registerFont(TTFont("Euclid", educlid_regular))
 
 class TableColumns(Enum):
     date = "Vervollständigt"
@@ -104,6 +110,8 @@ def generate_pdf(
         ('FONTNAME', (0, 0), (1, 0), bold_style.fontName),
         ('VALIGN', (0, 0), (1, 0), 'TOP'),
         ('TOPPADDING', (0, 0), (1, 0), 10),
+        ('LEFTPADDING', (0, 0), (1, 0), 5),
+        ('RIGHTPADDING', (0, 0), (1, 0), 5),
         ('TEXTCOLOR', (0, 0), (1, 0), '#222B55'),
     ])
 
@@ -210,6 +218,17 @@ def generate_pdf(
 
     # Add a table to the PDF
     table_data = [['Vervollständigt', 'Beschreibung', 'Einnahmen / Ausgaben']]
+    account_descriptive_table_para_style = ParagraphStyle(
+        'account_descriptive_table_para_style',
+        textColor='#212B54',
+        spaceAfter=3,
+    )
+    account_descriptive_table_para_style_bold = ParagraphStyle(
+        'account_descriptive_table_para_style_bold',
+        fontName=bold_style.fontName,
+        textColor='#212B54',
+        spaceAfter=3,
+    )
 
     for entry in data:
         account_descriptive_table_data = [[]]
@@ -217,11 +236,11 @@ def generate_pdf(
         for index, account_description in enumerate(account_descriptive_values):
             if index == 0:
                 account_descriptive_table_data[0].append(
-                    Paragraph(f"{account_description}", about_number_style_bold)
+                    Paragraph(f"{account_description}", account_descriptive_table_para_style_bold)
                 )
             else:
                 account_descriptive_table_data[0].append(
-                    Paragraph(f"{account_description}", about_number_style)
+                    Paragraph(f"{account_description}", account_descriptive_table_para_style,)
                 )
 
         table_data.append([entry[TableColumns.date.value], account_descriptive_table_data, entry[TableColumns.amount.value]])
@@ -236,7 +255,7 @@ def generate_pdf(
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('LEFTPADDING', (0, 0), (-1, 0), 12),
         ('RIGHTPADDING', (0, 0), (-1, 0), 12),
-        ('FONTNAME', (2, 0), (2, -1), bold_style.fontName),  # Apply bold font to the "Amount" column
+        ('FONTNAME', (2, 0), (2, -1), "EuclidSemiBold"),  # Apply bold font to the "Amount" column
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -246,7 +265,7 @@ def generate_pdf(
         ('RIGHTPADDING', (0, 1), (-1, -1), 15),
         ('TEXTCOLOR', (0, 0), (-1, -1), '#222B55'),
         ('TOPPADDING', (0, 1), (-1, -1), 10),  # Top padding for the "Beschreibung" column
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),  # Bottom padding for the "Beschreibung" column
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),  # Bottom padding for the "Beschreibung" column
     ])
 
     for i in range(1, len(table_data)):
