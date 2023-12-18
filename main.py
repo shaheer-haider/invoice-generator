@@ -116,7 +116,7 @@ def generate_pdf(
         ('ALIGN', (1, 0), (1, 0), 'LEFT'),
         ('FONTNAME', (0, 0), (1, 0), bold_style.fontName),
         ('VALIGN', (0, 0), (1, 0), 'TOP'),
-        ('TOPPADDING', (0, 0), (1, 0), 10),
+        ('TOPPADDING', (0, 0), (1, 0), 6),
         ('LEFTPADDING', (0, 0), (1, 0), 5),
         ('RIGHTPADDING', (0, 0), (1, 0), 5),
         ('TEXTCOLOR', (0, 0), (1, 0), '#222B55'),
@@ -197,9 +197,8 @@ def generate_pdf(
         ('ALIGN', (1, 0), (1, 0), 'LEFT'),
         ('FONTNAME', (0, 0), (1, 0), bold_style.fontName),
         ('VALIGN', (0, 0), (1, 0), 'TOP'),
-        ('TOPPADDING', (0, 0), (1, 0), 40),
-        ('BOTTOMPADDING', (0, 0), (1, 0), 5),
-        ('BOTTOMPADDING', (0, 0), (1, 0), 5),
+        ('TOPPADDING', (0, 0), (1, 0), 38),
+        ('BOTTOMPADDING', (0, 0), (1, 0), 0),
         ('TEXTCOLOR', (0, 0), (1, 0), '#222B55'),
     ])
 
@@ -259,7 +258,6 @@ def generate_pdf(
         ('BACKGROUND', (0, 0), (-1, 0), '#EBECF0'),
         ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1, 1)),
         ('FONTNAME', (0, 0), (-1, 0), bold_style.fontName),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('LEFTPADDING', (0, 0), (-1, 0), 12),
         ('RIGHTPADDING', (0, 0), (-1, 0), 12),
@@ -267,13 +265,12 @@ def generate_pdf(
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('TOPPADDING', (0, 1), (-1, -1), 12),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+        ('TOPPADDING', (0, 1), (-1, -1), 10), # Cells
+        ('TOPPADDING', (0, 0), (-1, 0), 8), # Column
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 8), # Column
         ('LEFTPADDING', (0, 1), (-1, -1), 15),
         ('RIGHTPADDING', (0, 1), (-1, -1), 15),
         ('TEXTCOLOR', (0, 0), (-1, -1), '#222B55'),
-        ('TOPPADDING', (0, 1), (-1, -1), 10),  # Top padding for the "Beschreibung" column
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),  # Bottom padding for the "Beschreibung" column
     ])
 
     for i in range(1, len(table_data)):
@@ -292,7 +289,7 @@ def generate_pdf(
     style = styles['Normal']
     style.textColor = colors.HexColor("#7A8199")  # RGB values as hexadecimal
     style.fontSize = 9  # Set font size
-    style.spaceBefore = 40  # Padding top (40px)
+    style.spaceBefore = 38  # Padding top (40px)
     style.spaceAfter = 30  # Padding bottom (30px)
     style.leftIndent = 15  # Padding left (15px)
     style.rightIndent = 15  # Padding right (15px)
@@ -308,19 +305,45 @@ def generate_pdf(
         page_width, page_height = PdfPagesize
 
         # Logo in the center
-        logo_path = "footer-image.png"
-        logo_width, logo_height = 115*mm, 72*mm
+        logo_path = "footer-image-3.png"
+        # logo_width, logo_height = 129*mm, 31*mm
+        logo_width, logo_height = 129*mm, 28*mm
 
         # Calculate the coordinates to center the image
         x_centered = (page_width - logo_width) / 2
-        y_centered = 10  # You may need to adjust this value based on your requirements
+        y_centered = 40  # You may need to adjust this value based on your requirements
 
-        canvas.drawInlineImage(logo_path, x_centered, y_centered, width=logo_width, height=logo_height)
-
-        # Two lines underneath the logo
+        canvas.drawInlineImage(logo_path, x_centered + 9, y_centered, width=logo_width, height=logo_height)
 
         # Page number on the right side in a smaller font
         canvas.setFont("Helvetica", 8)
+        page_num = canvas.getPageNumber()
+        text = f"{page_num}"
+        canvas.setFillColorRGB(0.686, 0.702, 0.753)
+
+        # Adjust the x-coordinate to place the page number closer to the right edge
+        x_page_num = page_width - 20
+        canvas.drawRightString(x_page_num, 15, text)
+
+
+
+
+
+
+        line1 = "Mit Finom.co erstellt"
+        line2 = "Empowered by Solaris"
+
+        # Draw the first line
+        canvas.setFont("Helvetica", 9)
+        canvas.setFillColorRGB(0.686, 0.702, 0.753)
+        y_centered = 26  # You may need to adjust this value based on your requirements
+        canvas.drawRightString(x_centered + logo_width - 2, y_centered, line1)
+
+        # Draw the second line
+        canvas.drawRightString(x_centered + logo_width + 2, y_centered - 10, line2)
+
+        # Page number on the right side in a smaller font
+        canvas.setFont("Helvetica", 9)
         page_num = canvas.getPageNumber()
         text = f"{page_num}"
         canvas.setFillColorRGB(0.686, 0.702, 0.753)

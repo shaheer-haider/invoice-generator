@@ -18,6 +18,7 @@ address_style = ParagraphStyle(
     'address_style',
     textColor='#212B54',
     fontSize=11,
+    fontName="Euclid",
 )
 
 kontoauszug_style = ParagraphStyle(
@@ -43,6 +44,7 @@ account_number_style = ParagraphStyle(
     'account_number_style',
     textColor='#212B54',
     fontName="NumericFont",
+    fontSize=9,
 )
 about_number_style = ParagraphStyle(
     'about_number_style',

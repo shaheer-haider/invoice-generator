@@ -21,8 +21,6 @@ document_end_text = """
 
     <br />
     <br />
-    <br />
-    <br />
 
 
     FINOM, eine Gesellschaft mit beschränkter Haftung, eingetragen im Handelsregister der niederländischen Industrie- und
